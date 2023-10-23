@@ -1,11 +1,14 @@
 <?php
 include("database.php");
 
-if (isset($_POST["get_all"])) {
-   
+
+var_dump(123);
+if (isset($_POST["cmd"]) && $_POST["cmd"] == "get_all") {
+    getAllData();
 }
 
-function getAllData() {
+function getAllData()
+{
     include("database.php");
     $list = [];
     $query = "SELECT T01_Ranking.KeywordNo, T01_Ranking.Ranking, M02_Keyword.Keyword, DATE(T01_Ranking.UpdateTime) AS UpdateTime, DATE(T01_Ranking.AddTime) AS AddTime
@@ -20,8 +23,8 @@ function getAllData() {
         $list[] = $row;
     }
 
-    // var_dump($list);
-// exit;
+    // var_dump($query);
+    // exit;
 
     echo json_encode(
         array(

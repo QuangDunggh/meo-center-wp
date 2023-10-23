@@ -2,6 +2,8 @@ $(document).ready(function () {
 	// let data = @json($events);
 	$.ajax({
 		url: "http://meo.test/wp-content/themes/mytheme/getdataservice.php",
+		data : {cmd : "get_all"},
+		type : 'POST'
 	}).done(function (data) {
 		console.log(JSON.parse(data).result);
 	}).fail(function (jqxhr) {
