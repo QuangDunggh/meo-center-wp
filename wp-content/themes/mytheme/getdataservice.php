@@ -2,7 +2,7 @@
 include("database.php");
 
 
-var_dump(123);
+var_dump($_POST["cmd"]);
 if (isset($_POST["cmd"]) && $_POST["cmd"] == "get_all") {
     getAllData();
 }
@@ -27,9 +27,8 @@ function getAllData()
     // exit;
 
     echo json_encode(
-        array(
-            "result" => $list
-        )
+        $list
+
     );
 }
 

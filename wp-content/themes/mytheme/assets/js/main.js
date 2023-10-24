@@ -5,7 +5,8 @@ $(document).ready(function () {
 		data : {cmd : "get_all"},
 		type : 'POST'
 	}).done(function (data) {
-		console.log(JSON.parse(data).result);
+		JSON.parse(data.result);
+		console.log(data);
 	}).fail(function (jqxhr) {
 		console.log(jqxhr);
 	});
