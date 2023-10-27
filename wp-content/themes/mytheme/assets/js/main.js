@@ -38,6 +38,22 @@ $(document).ready(function () {
 			selectHelper: true,
 			events: data
 		});
+		renderOptionYearAnhMonth(2019);
+
+		
+		const d = new Date();
+		let month = d.getMonth() + 1;
+		let year = d.getFullYear();
+
+		if (month < 10) {
+			$(`#selectYearMonth option[value ='${year}-0${month}']`).attr("selected","selected");
+			// htmlOption += `<option value="${yearStart + i}-0${j}">${j}月 ${yearStart + i}</option>`;
+		} else {
+			$(`#selectYearMonth option[value ='${year}-${month}']`).attr("selected","selected");
+			// htmlOption += `<option value="${yearStart + i}-${j}">${j}月 ${yearStart + i}</option>`;
+		}
+	
+		renderDateTable(month, year, data);
 	}).fail(function (jqxhr) {
 		console.log(jqxhr);
 	});
@@ -53,9 +69,9 @@ $(document).ready(function () {
 		for (let i = 0; i <= lengthYear; i++) {
 			for (let j = 1; j <= 12; j++) {
 				if (j < 10) {
-					htmlOption += `<option value="${yearStart + i}-0${j}">${j}月 ${yearStart + i}</option>`;
+					htmlOption += `<option id="${yearStart + i}-0${j}" value="${yearStart + i}-0${j}">${j}月 ${yearStart + i}</option>`;
 				} else {
-					htmlOption += `<option value="${yearStart + i}-${j}">${j}月 ${yearStart + i}</option>`;
+					htmlOption += `<option id="${yearStart + i}-${j}" value="${yearStart + i}-${j}">${j}月 ${yearStart + i}</option>`;
 				}
 			}
 		}
@@ -74,7 +90,7 @@ $(document).ready(function () {
 
 
 	function renderDateTable(month, year, data) {
-		let listDay = getDaysInMonth(parseInt(month), year);
+		let listDay = getDaysInMonth(parseInt(month) - 1, year);
 		let html;
 		listDay.forEach(element => {
 			html += `<tr><th scope="row" id="${element}">${element}</th>
@@ -84,6 +100,9 @@ $(document).ready(function () {
 		});
 		$('#content-table').html(html);
 	}
+
+
+
 
 	$("#selectYearMonth").on("change", function (e) {
 		let data = $("#selectYearMonth").val();
@@ -106,6 +125,7 @@ $(document).ready(function () {
 		});
 	})
 
-	renderOptionYearAnhMonth(2019);
+
+		// renderOptionYearAnhMonth(2019);
 
 });
