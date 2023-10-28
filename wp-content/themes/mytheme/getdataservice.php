@@ -33,7 +33,8 @@ function getAllData()
             "title" => $title,
             "start" => $value['AddTime'],
             "end" => $value['UpdateTime'],
-            "ranking" => $value['Ranking']
+            "ranking" => $value['Ranking'],
+            "keyword" => $value["Keyword"]
         ];
     }
 
@@ -68,7 +69,8 @@ function getDataByMonthAndYear()
             "title" => $title,
             "start" => $value['AddTime'],
             "end" => $value['UpdateTime'],
-            "ranking" => $value['Ranking']
+            "ranking" => $value['Ranking'],
+            "keyword" => $value["Keyword"]
         ];
     }
     // var_dump($monthAndYear);
