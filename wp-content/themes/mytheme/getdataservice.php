@@ -1,8 +1,6 @@
 <?php
 include("database.php");
 
-
-
 if (isset($_POST["cmd"]) && $_POST["cmd"] == "get_all") {
     getAllData();
 }
@@ -15,7 +13,7 @@ function getAllData()
 {
     include("database.php");
     $list = [];
-    $query = "SELECT T01_Ranking.KeywordNo, T01_Ranking.Ranking, M02_Keyword.Keyword, DATE(T01_Ranking.UpdateTime) AS UpdateTime, DATE(T01_Ranking.AddTime) AS AddTime
+    $query = "SELECT T01_Ranking.KeywordNo, T01_Ranking.Ranking, M02_Keyword.Keyword, T01_Ranking.KeywordNo, DATE(T01_Ranking.UpdateTime) AS UpdateTime, DATE(T01_Ranking.AddTime) AS AddTime
             FROM T01_Ranking 
             JOIN M02_Keyword 
             ON T01_Ranking.KeywordNo = M02_Keyword.KeywordNo
@@ -51,7 +49,7 @@ function getDataByMonthAndYear()
     $arrayMonthAndYear = explode('-', $monthAndYear);
 
     $list = [];
-    $query = "  SELECT T01_Ranking.KeywordNo, T01_Ranking.Ranking, M02_Keyword.Keyword, DATE(T01_Ranking.UpdateTime) AS UpdateTime, DATE(T01_Ranking.AddTime) AS AddTime
+    $query = "  SELECT T01_Ranking.KeywordNo, T01_Ranking.Ranking, M02_Keyword.Keyword, T01_Ranking.KeywordNo, DATE(T01_Ranking.UpdateTime) AS UpdateTime, DATE(T01_Ranking.AddTime) AS AddTime
                 FROM T01_Ranking 
                 JOIN M02_Keyword 
                 ON T01_Ranking.KeywordNo = M02_Keyword.KeywordNo
@@ -70,7 +68,8 @@ function getDataByMonthAndYear()
             "start" => $value['AddTime'],
             "end" => $value['UpdateTime'],
             "ranking" => $value['Ranking'],
-            "keyword" => $value["Keyword"]
+            "keyword" => $value["Keyword"],
+            "keywordNo" => $value["KeywordNo"],
         ];
     }
     // var_dump($monthAndYear);

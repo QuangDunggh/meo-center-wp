@@ -1,4 +1,32 @@
 $(document).ready(function () {
+
+	$('#ranking_nav').addClass('active');
+
+
+	function redirectNav() {
+		$('#ranking_nav').on('click', function () {
+			let check_ranking_button = $(this).hasClass('active');
+			if (!check_ranking_button) {
+				$(this).addClass('active');
+				$('#overview_nav').removeClass('active');
+				$('#table-ranking').css('display', 'block');
+				$('#calendar-block').css('display', 'block');
+				$('#image-list-block').css('display', 'none');
+			}
+		});
+
+		$('#overview_nav').on('click', function () {
+			let check_ranking_button = $(this).hasClass('active');
+			if (!check_ranking_button) {
+				$(this).addClass('active');
+				$('#ranking_nav').removeClass('active');
+				$('#table-ranking').css('display', 'none');
+				$('#calendar-block').css('display', 'none');
+				$('#image-list-block').css('display', 'block');
+			}
+		})
+	}
+
 	function renderCalendarAndData() {
 		renderOptionYearAnhMonth(2019);
 		const d = new Date();
@@ -22,7 +50,7 @@ $(document).ready(function () {
 				header: {
 					left: 'prev, next today',
 					center: 'title',
-					right: 'month, agendaWeek, agendaDay'
+					right: ''
 				},
 				buttonText: {
 					prevYear: '&laquo;', // <<
@@ -50,12 +78,10 @@ $(document).ready(function () {
 			});
 
 			data.forEach(element => {
+				// console.log(element.start);
 				let htmlKeyRank = `<div>${element.ranking}</div>`
 				$(`#rank-key-${element.start}`).append(htmlKeyRank);
-				// console.log(`rank-key-${element.start}`);
-				console.log($(`#rank-key-${element.start}`));
 			});
-
 		}).fail(function (jqxhr) {
 			console.log(jqxhr);
 		});
@@ -99,16 +125,6 @@ $(document).ready(function () {
 
 		});
 		$('#content-table').html(html);
-
-		// setTimeout(function () {
-		// 	data.forEach(element => {
-		// 		let htmlKeyRank = `<div>${element.ranking}</div>`
-		// 		$(`#rank-key-${element.start}`).append(htmlKeyRank);
-		// 		// console.log(`rank-key-${element.start}`);
-		// 		console.log($(`#rank-key-${element.start}`));
-		// 	});
-		// }, 1000);
-
 	}
 
 
@@ -127,9 +143,59 @@ $(document).ready(function () {
 				},
 				dataType: 'json'
 			}).done(function (data) {
+				let yearAndMonth = $("#selectYearMonth").val();
+				let yearAndMonthArr = yearAndMonth.split('-');
+				// console.log(yearAndMonthArr);
+				$('#calendar').fullCalendar({
+					header: {
+						left: 'prev, next today',
+						center: 'title',
+						right: ''
+					},
+					buttonText: {
+						prevYear: '&laquo;', // <<
+						nextYear: '&raquo;', // >>
+						today: '今日',
+						month: '月',
+						week: '週',
+						day: '日'
+					},
+
+					monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+
+					monthNamesShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月',
+						'12月'
+					],
+					year: yearAndMonthArr[0],
+					month: yearAndMonthArr[1],
+					// initialDate: dayAndMonth,
+					dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
+
+					dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
+
+					selectable: true,
+
+					selectHelper: true,
+					events: data
+				});
+				$('#calendar').fullCalendar('gotoDate', yearAndMonth);
 				data.forEach(element => {
-					let htmlKeyRank = `<div>${element.ranking}</div>`
+					let currentDate = new Date(element.start);
+					let year = currentDate.getFullYear();
+					let month = currentDate.getMonth() + 1;
+					let day = currentDate.getDate();
+
+					console.log(element);
+
+					let htmlKeyRank = `<div>${element.keywordNo}</div>`;
+					let htmlImage = '';
+					if (month >= 10) {
+						htmlImage += `<div>${element.keyword} <a href="https://ranktool-meo-center.com/RankingImages/${year}/${year}${month}/${year}${month}${day}/${element.keywordNo}.jpg">image ranking</a> </div>`
+					} else {
+						htmlImage += `<div>${element.keyword} <a href="https://ranktool-meo-center.com/RankingImages/${year}/${year}0${month}/${year}0${month}${day}/${element.keywordNo}.jpg">image ranking</a> </div>`
+					}
 					$(`#rank-key-${element.start}`).append(htmlKeyRank);
+					$(`#image-${element.start}`).append(htmlImage);
 					// console.log(`rank-key-${element.start}`);
 					console.log($(`#rank-key-${element.start}`));
 				});
@@ -139,13 +205,53 @@ $(document).ready(function () {
 		})
 	}
 
+	function getImageByMonthAndYear() {
+		$("#selectYearMonth").on("change", function (e) {
+			let data = $("#selectYearMonth").val();
+			let yearAndMonth = data.split('-');
+			renderDateTable(yearAndMonth[1], yearAndMonth[0]);
+			$.ajax({
+				type: 'POST',
+				url: 'http://meo.test/wp-content/themes/mytheme/getdataservice.php',
+				data: {
+					monthAndYear: data,
+					cmd: 'getDataByMonthAndYear'
+				},
+				dataType: 'json'
+			}).done(function (data) {
+				let yearAndMonth = $("#selectYearMonth").val();
+				let yearAndMonthArr = yearAndMonth.split('-');
+				// console.log(yearAndMonthArr);
+				data.forEach(element => {
+					let currentDate = new Date(element.start);
+					let year = currentDate.getFullYear();
+					let month = currentDate.getMonth() + 1;
+					let day = currentDate.getDate();
+					console.log(element);
 
 
-	function loadFunction() {
-		renderCalendarAndData();
-		getDataByMonthAndYear();
+					let htmlImage = '';
+					if (month >= 10) {
+						htmlImage += `<div style="margin-top:50px;"><img src="https://ranktool-meo-center.com/RankingImages/${year}/${year}${month}/${year}${month}${day}/${element.keywordNo}.jpg"></div>`
+					} else {
+						htmlImage += `<div style="margin-top:50px;"><img src="https://ranktool-meo-center.com/RankingImages/${year}/${year}0${month}/${year}0${month}${day}/${element.keywordNo}.jpg"></div>`
+					}
+					$(`#image-list`).append(htmlImage);
+					console.log(`rank-key-${element.start}`);
+				});
+			}).fail(function (jqxhr) {
+				console.log(jqxhr);
+			});
+		})
 	}
 
+	function loadFunction() {
+
+		renderCalendarAndData();
+		getDataByMonthAndYear();
+		getImageByMonthAndYear();
+		redirectNav();
+	}
 
 	loadFunction();
 

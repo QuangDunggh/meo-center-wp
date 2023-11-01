@@ -1,6 +1,6 @@
 <?php
 $db_host = "localhost";
-$db_name = "meo_center";
+$db_name = "meo";
 $db_user = "root";
 $db_pass = "123456";
 

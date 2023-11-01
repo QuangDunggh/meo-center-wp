@@ -24,4 +24,51 @@ function dung_register_scripts()
 
 add_action('wp_enqueue_scripts', 'dung_register_scripts');
 
+
+add_action('template_redirect', 'redirect_front_page');
+
+function redirect_front_page()
+{
+    if (is_front_page()) {
+        if (!is_user_logged_in()) {
+            wp_redirect(site_url() . '/wp-login.php');
+        }
+    }
+}
+
+add_action('wp_login', 'login_success', 10, 2);
+function login_success($user_login, $user)
+{
+    $custom_db = custom_database_connection();
+
+    // Example query on the custom database
+    $count = $custom_db->get_results("SELECT count(*) AS count_result FROM M03_User WHERE UserName = '$user_login'");
+    // var_dump((int)$count[0]->count_result);
+    // exit;
+    if ((int)$count[0]->count_result > 0) {
+        wp_redirect(site_url());
+        die;
+    } else {
+        wp_redirect(site_url() . '/wp-login.php');
+        die;
+    }
+
+
+}
+
+function custom_database_connection()
+{
+    global $wpdb; // This is the default WordPress database connection
+
+    // Define the credentials for the custom database
+    $custom_db_host = 'localhost';
+    $custom_db_name = 'meo_center';
+    $custom_db_user = 'root';
+    $custom_db_password = '123456';
+
+    // Establish a connection to the custom database
+    $custom_db = new wpdb($custom_db_user, $custom_db_password, $custom_db_name, $custom_db_host);
+
+    return $custom_db;
+}
 ?>
